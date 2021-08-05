@@ -102,5 +102,60 @@ document.addEventListener('DOMContentLoaded', () => {
 
     setClock('.timer', deadline);
 
-    
+
+    ///////////////////////////////////////////////////////////
+    /////////////////   Modal   //////////////////////////////
+    ////////////////////////////////////////////////////////
+
+    const openModal = document.querySelectorAll('.btn[data-open]'),
+        closeModal = document.querySelector('.modal__close[data-close]'),
+        modal = document.querySelector('.modal');
+
+    // function showModal() {
+    openModal.forEach(item => {
+        item.addEventListener('click', () => {
+
+            // modal.style.display = 'block';
+            modal.classList.add('show');
+            modal.classList.remove('hide');
+            document.body.style.overflow = 'hidden';//отключает прокрутку страницы когда модальное окно открыто
+
+        });
+    });
+
+    // }
+    function hideModal() {
+        modal.classList.add('hide');
+        modal.classList.remove('show');
+        document.body.style.overflow = '';
+        
+    }
+
+    closeModal.addEventListener('click', hideModal);
+    // function hideModal() {
+    // closeModal.addEventListener('click', () => {
+    //     // modal.style.display = 'none';
+    //     modal.classList.add('hide');
+    //     modal.classList.remove('show');
+
+    //     document.body.style.overflow = '';
+    // });
+    // }
+    // showModal();
+    // hideModal();
+
+    modal.addEventListener('click', (e) => {
+
+        if (e.target === modal) {
+            hideModal();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.code === 'Escape') {
+            hideModal();
+        }
+    });
+
+
 });
