@@ -111,24 +111,24 @@ document.addEventListener('DOMContentLoaded', () => {
         closeModal = document.querySelector('.modal__close[data-close]'),
         modal = document.querySelector('.modal');
 
-    // function showModal() {
+    function showModal() {
+     
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = 'hidden';//отключает прокрутку страницы когда модальное окно открыто
+        clearInterval(modalTimerId);
+    }
+
     openModal.forEach(item => {
-        item.addEventListener('click', () => {
-
-            // modal.style.display = 'block';
-            modal.classList.add('show');
-            modal.classList.remove('hide');
-            document.body.style.overflow = 'hidden';//отключает прокрутку страницы когда модальное окно открыто
-
-        });
+        item.addEventListener('click', showModal);
     });
 
-    // }
+
     function hideModal() {
         modal.classList.add('hide');
         modal.classList.remove('show');
         document.body.style.overflow = '';
-        
+
     }
 
     closeModal.addEventListener('click', hideModal);
@@ -141,7 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
     //     document.body.style.overflow = '';
     // });
     // }
-    // showModal();
+
     // hideModal();
 
     modal.addEventListener('click', (e) => {
@@ -152,10 +152,23 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('keydown', (e) => {
-        if (e.code === 'Escape') {
+        if (e.code === 'Escape' && modal.classList.contains('show')) {
             hideModal();
         }
     });
+
+    const modalTimerId = setTimeout(showModal, 3000);
+
+    function showModalByScroll() {
+        if (window.pageYOffset + document.documentElement.clientHeight >= document.
+            documentElement.scrollHeight) {
+                showModal();
+                window.removeEventListener('scroll', showModalByScroll);
+            }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
+    // }, {once:true});
 
 
 });
