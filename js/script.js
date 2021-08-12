@@ -1,4 +1,5 @@
-"use strict";
+'use strict';
+
 document.addEventListener('DOMContentLoaded', () => {
 
     ///////////////////////////////////////////////////////////
@@ -157,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // const modalTimerId = setTimeout(showModal, 5000);
+     const modalTimerId = setTimeout(showModal, 5000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.
@@ -175,14 +176,15 @@ document.addEventListener('DOMContentLoaded', () => {
     ///////////////////////////////////////////////////////////
 
     class MenuCard {
-        constructor(src, alt,title, descr, price, parentSelector) {
+        constructor(src, alt,title, descr, price, parentSelector, ...classes) {//classes - rest оператор
             this.src = src;
             this.alt = alt;
             this.title = title;
             this.descr = descr;
             this.price = price;
-            this.transfer = 27;
+            this.classes = classes;
             this.parentSelector = document.querySelector(parentSelector);
+            this.transfer = 27;
             this.changeToUAH();
         }
 
@@ -191,9 +193,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         render() {
-            const elemnt = document.createElement('div');
-            elemnt.innerHTML = `
-            <div class="menu__item">
+            const element = document.createElement('div');
+            if (this.classes.length == 0) {
+                this.element = 'menu__item';
+                element.classList.add(this.element);
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
+            }
+
+            element.innerHTML = `
                 <img src=${this.src} alt=${this.alt}>
                 <h3 class="menu__item-subtitle">${this.title}</h3>
                 <div class="menu__item-descr">${this.descr}</div>
@@ -202,9 +210,8 @@ document.addEventListener('DOMContentLoaded', () => {
                     <div class="menu__item-cost">Цена:</div>
                     <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
                 </div>
-            </div>
             `;
-            this.parentSelector.append(elemnt);
+            this.parentSelector.append(element);
         }
     }
 
@@ -216,7 +223,8 @@ document.addEventListener('DOMContentLoaded', () => {
         овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной
         ценой и высоким качеством!`,
         9,
-        '.menu .container'
+        '.menu .container',
+        'menu__item'
     ).render();//сработает только 1 раз S
     
     new MenuCard(
@@ -227,7 +235,8 @@ document.addEventListener('DOMContentLoaded', () => {
         и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода
         в ресторан!`,
         21,
-        '.menu .container'
+        '.menu .container',
+        'menu__item'
     ).render();
 
     new MenuCard(
@@ -238,7 +247,69 @@ document.addEventListener('DOMContentLoaded', () => {
         продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное
         количество белков за счет тофу и импортных вегетарианских стейков.`,
         14,
-        '.menu .container'
+        '.menu .container',
+        'menu__item'
     ).render();
+
+
+    ///////////////////////////////////////////////////////////
+    /////////////////   Form   ///////////////////////////////
+    /////////////////////////////////////////////////////////
+
+    const forms = document.querySelectorAll('form');
+
+    const message = {
+        loading: 'Loading',
+        success: 'Thanks, we write You soon!',
+        failure: 'Request failed'
+    };
+
+    forms.forEach(item => {
+        postData(item);
+    });
+    
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            const statusMessage = document.createElement('div');
+            statusMessage.classList.add('status');
+            statusMessage.textContent = message.loading;
+            form.append(statusMessage);
+
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+
+            // request.setRequestHeader('Content-type', 'multipart/form-data');
+            //когда мы используем XMLHttpReques вместе с FormData, заголовка нам не нужно(ставиться автоматически)
+            request.setRequestHeader('Content-type', 'application/json');
+            const formData = new FormData(form);
+
+            const object = {};
+                formData.forEach(function(value, key){  //перевод FormData  в JSON 
+                    object[key] = value;
+                });
+            
+            const json = JSON.stringify(object);
+            
+
+            request.send(json);
+            //request.send(formData);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    statusMessage.textContent = message.success;
+                    form.reset();
+                    setTimeout(() => {
+                        statusMessage.remove();
+                    }, 3000);
+                } else {
+                    statusMessage.textContent = message.failure;
+                }
+            });
+
+        });
+    }
 
 });
