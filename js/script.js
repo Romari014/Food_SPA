@@ -158,7 +158,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-     const modalTimerId = setTimeout(showModal, 50000);
+    const modalTimerId = setTimeout(showModal, 50000);
 
     function showModalByScroll() {
         if (window.pageYOffset + document.documentElement.clientHeight >= document.
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ///////////////////////////////////////////////////////////
 
     class MenuCard {
-        constructor(src, alt,title, descr, price, parentSelector, ...classes) {//classes - rest оператор
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {//classes - rest оператор
             this.src = src;
             this.alt = alt;
             this.title = title;
@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', () => {
         '.menu .container',
         'menu__item'
     ).render();//сработает только 1 раз S
-    
+
     new MenuCard(
         "img/tabs/elite.jpg",
         "elite",
@@ -267,7 +267,7 @@ document.addEventListener('DOMContentLoaded', () => {
     forms.forEach(item => {
         postData(item);
     });
-    
+
     function postData(form) {
         form.addEventListener('submit', (e) => {
             e.preventDefault();
@@ -281,34 +281,33 @@ document.addEventListener('DOMContentLoaded', () => {
             // form.append(statusMessage);
             form.insertAdjacentElement('afterend', statusMessage);
 
-            const request = new XMLHttpRequest();
-            request.open('POST', 'server.php');
-
             // request.setRequestHeader('Content-type', 'multipart/form-data');
             //когда мы используем XMLHttpReques вместе с FormData, заголовка нам не нужно(ставиться автоматически)
-            request.setRequestHeader('Content-type', 'application/json');
+
             const formData = new FormData(form);
 
             const object = {};
                 formData.forEach(function(value, key){  //перевод FormData  в JSON 
                     object[key] = value;
                 });
-            
-            const json = JSON.stringify(object);
-            
 
-            request.send(json);
-            //request.send(formData);
 
-            request.addEventListener('load', () => {
-                if (request.status === 200) {
-                    console.log(request.response);
-                    showThanksModal(message.success);
-                    form.reset();
-                        statusMessage.remove();
-                } else {
-                    showThanksModal(message.failure);
-                }
+            fetch('server.php', {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(object)
+            })
+            .then(data => data.text())
+            .then(data => {
+                console.log(data);
+                showThanksModal(message.success);
+                statusMessage.remove();
+            }).catch(() => {
+                showThanksModal(message.failure);
+            }).finally(() => {
+                form.reset();
             });
 
         });
@@ -330,7 +329,7 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
 
         document.querySelector('.modal').append(thanksModal);
-        setTimeout(() =>{
+        setTimeout(() => {
             thanksModal.remove();
             prevModalDialog.classList.add('show');
             prevModalDialog.classList.remove('hide');
@@ -338,4 +337,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 4000);
     }
 
+
+
+    ///////////////////////////////////////////////////////////
+    /////////////////   Fetch   ///////////////////////////////
+    ///////////////////////////////////////////////////////////
+
+
+    // fetch('https://jsonplaceholder.typicode.com/posts', {
+    //     method: "POST",
+    //     body: JSON.stringify({name: 'Alex'}),
+    //     headers: {
+    //         'Content-type': 'application/json'
+    //     }
+    // })
+    //     .then(response => response.json())
+    //     .then(json => console.log(json));
 });
