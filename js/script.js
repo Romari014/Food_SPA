@@ -260,8 +260,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const message = {
         loading: 'img/form/spinner.svg',
-        success: 'Thanks, we call You soon!',
-        failure: 'Request failed'
+        success: 'Спасибо, мы с вами свядемся!',
+        failure: 'Что-то пошло не так :('
     };
 
     forms.forEach(item => {
@@ -342,8 +342,6 @@ document.addEventListener('DOMContentLoaded', () => {
     ///////////////////////////////////////////////////////////
     /////////////////   Fetch   ///////////////////////////////
     ///////////////////////////////////////////////////////////
-
-
     // fetch('https://jsonplaceholder.typicode.com/posts', {
     //     method: "POST",
     //     body: JSON.stringify({name: 'Alex'}),
@@ -353,4 +351,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // })
     //     .then(response => response.json())
     //     .then(json => console.log(json));
+
+    fetch('http://localhost:3000/menu')
+    .then(data => data.json())
+    .then(res => console.log(res));
 });
