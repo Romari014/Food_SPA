@@ -1,5 +1,5 @@
-function timer() {
-    const deadline = '2021-08-21';
+function timer(id, deadline) {
+    
 
     function getTimeRemaning(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),//Date.parse Строковое представление даты 
@@ -53,7 +53,7 @@ function timer() {
         }
     }
 
-    setClock('.timer', deadline);
+    setClock(id, deadline);
 }
 
-module.exports = timer;
+export default timer;

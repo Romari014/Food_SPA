@@ -1,22 +1,34 @@
-'use strict';
+
+import tabs from './modules/tabs';
+import modal from './modules/modal';
+import timer from './modules/timer';
+import slider from './modules/slider';
+import form from './modules/form';
+import cards from './modules/cards';
+import calc from './modules/calc';
+import {showModal} from './modules/modal';
+
 
 document.addEventListener('DOMContentLoaded', () => {
 
-    const tabs = require('./modules/tabs'),
-            modal = require('./modules/modal'),
-            timer =  require('./modules/timer'),
-            slider  =  require('./modules/slider'),
-            form  =  require('./modules/form'),
-            cards  =  require('./modules/cards'),
-            calc  =  require('./modules/calc');
-    
-    tabs();
-    modal();
-    timer();
-    slider();
-    form();
+    const modalTimerId = setTimeout(() => showModal('.modal', modalTimerId), 300000);
+
+    tabs('.tabheader__item', '.tabcontent', '.tabheader__items', 'tabheader__item_active');
+    modal('.btn[data-open]', '.modal', modalTimerId);
+    timer('.timer', '2021-08-28');
+    form('form', modalTimerId);
     cards();
     calc();
+    slider({
+        container: '.offer__slider',
+        nextArrow: '.offer__slider-next',
+        slide: '.offer__slide',
+        prevArrow:'.offer__slider-prev',
+        totalCounter: '#total',
+        currentCounter: '#current',
+        wrapper: '.offer__slider-wrapper',
+        field: '.offer__slider-inner'
+    });
 
 });
 
